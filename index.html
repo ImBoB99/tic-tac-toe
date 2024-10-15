@@ -17,12 +17,63 @@
             const player1 = {name: "Lala", marker: "X", wins: 0,};
             const player2 = {name: "Hope", marker: "O", wins: 0,};
 
-            const playTurn = (player, index) => gameboard.board[index] = player.marker;
+            const playTurn = (player, index) => {
+                gameboard.board[index] = player.marker
+                checkWin(player);
+            };
 
-            return { gameboard, player1, player2, playTurn};
+            const checkRows = function(player) {
+                if (gameboard.board[0] === player.marker && gameboard.board[1] === player.marker && gameboard.board[2] === player.marker) {
+                    return 1;
+                }
+                if (gameboard.board[3] === player.marker && gameboard.board[4] === player.marker && gameboard.board[5] === player.marker) {
+                    return 1;
+                }
+                if (gameboard.board[6] === player.marker && gameboard.board[7] === player.marker && gameboard.board[8] === player.marker) {
+                    return 1;
+                }
+            }
+
+            const checkColumns = function(player) {
+                if (gameboard.board[0] === player.marker && gameboard.board[3] === player.marker && gameboard.board[6] === player.marker) {
+                    return 1;
+                }
+                if (gameboard.board[1] === player.marker && gameboard.board[4] === player.marker && gameboard.board[7] === player.marker) {
+                    return 1;
+                }
+                if (gameboard.board[2] === player.marker && gameboard.board[5] === player.marker && gameboard.board[8] === player.marker) {
+                    return 1;
+                }
+            }
+
+            const checkDiagonals = function(player) {
+                if (gameboard.board[0] === player.marker && gameboard.board[4] === player.marker && gameboard.board[8] === player.marker) {
+                    return 1;
+                }
+                if (gameboard.board[2] === player.marker && gameboard.board[4] === player.marker && gameboard.board[6] === player.marker) {
+                    return 1;
+                }
+            }
+
+
+            const checkWin = function (player) {
+                if (checkRows(player)) {
+                    console.log(player.name + " has won the game")
+                }
+                if (checkColumns(player)) {
+                    console.log(player.name + " has won the game")
+                }
+                if (checkDiagonals(player)) {
+                    console.log(player.name + " has won the game")
+                }
+            }
+
+            return { gameboard, player1, player2, playTurn, checkWin};
         }) ();
 
         game.playTurn(game.player1, 0)
+        game.playTurn(game.player1, 3)
+        game.playTurn(game.player1, 6)
 
         console.log(game.gameboard.board)
 
