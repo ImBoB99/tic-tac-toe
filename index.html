@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Tic Tac Toe</title>
+</head>
+<body>
+
+    <script>
+        const game = (function () {
+            const gameboard = {board: [ null, null, null,
+                                        null, null, null,
+                                        null, null, null
+                                    ]};                               
+            const player1 = {name: "Lala", marker: "X", wins: 0,};
+            const player2 = {name: "Hope", marker: "O", wins: 0,};
+
+            const playTurn = (player, index) => gameboard.board[index] = player.marker;
+
+            return { gameboard, player1, player2, playTurn};
+        }) ();
+
+        game.playTurn(game.player1, 0)
+
+        console.log(game.gameboard.board)
+
+
+
+    </script>
+    
+</body>
+</html>
