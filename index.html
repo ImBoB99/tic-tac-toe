@@ -9,74 +9,94 @@
 <body>
 
     <script>
-        const game = (function () {
-            const gameboard = {board: [ null, null, null,
-                                        null, null, null,
-                                        null, null, null
-                                    ]};                               
+        const Game = (function () {
+
             const player1 = {name: "Lala", marker: "X", wins: 0,};
             const player2 = {name: "Hope", marker: "O", wins: 0,};
 
             const playTurn = (player, index) => {
-                gameboard.board[index] = player.marker
+                Gameboard.setMarker(player, index);
+                Gameboard.logBoard();
                 checkWin(player);
             };
 
             const checkRows = function(player) {
-                if (gameboard.board[0] === player.marker && gameboard.board[1] === player.marker && gameboard.board[2] === player.marker) {
+                if (Gameboard.getBoard()[0] === player.marker && Gameboard.getBoard()[1] === player.marker && Gameboard.getBoard()[2] === player.marker) {
                     return 1;
                 }
-                if (gameboard.board[3] === player.marker && gameboard.board[4] === player.marker && gameboard.board[5] === player.marker) {
+                if (Gameboard.getBoard()[3] === player.marker && Gameboard.getBoard()[4] === player.marker && Gameboard.getBoard()[5] === player.marker) {
                     return 1;
                 }
-                if (gameboard.board[6] === player.marker && gameboard.board[7] === player.marker && gameboard.board[8] === player.marker) {
+                if (Gameboard.getBoard()[6] === player.marker && Gameboard.getBoard()[7] === player.marker && Gameboard.getBoard()[8] === player.marker) {
                     return 1;
                 }
             }
 
             const checkColumns = function(player) {
-                if (gameboard.board[0] === player.marker && gameboard.board[3] === player.marker && gameboard.board[6] === player.marker) {
+                if (Gameboard.getBoard()[0] === player.marker && Gameboard.getBoard()[3] === player.marker && Gameboard.getBoard()[6] === player.marker) {
                     return 1;
                 }
-                if (gameboard.board[1] === player.marker && gameboard.board[4] === player.marker && gameboard.board[7] === player.marker) {
+                if (Gameboard.getBoard()[1] === player.marker && Gameboard.getBoard()[4] === player.marker && Gameboard.getBoard()[7] === player.marker) {
                     return 1;
                 }
-                if (gameboard.board[2] === player.marker && gameboard.board[5] === player.marker && gameboard.board[8] === player.marker) {
+                if (Gameboard.getBoard()[2] === player.marker && Gameboard.getBoard()[5] === player.marker && Gameboard.getBoard()[8] === player.marker) {
                     return 1;
                 }
             }
 
             const checkDiagonals = function(player) {
-                if (gameboard.board[0] === player.marker && gameboard.board[4] === player.marker && gameboard.board[8] === player.marker) {
+                if (Gameboard.getBoard()[0] === player.marker && Gameboard.getBoard()[4] === player.marker && Gameboard.getBoard()[8] === player.marker) {
                     return 1;
                 }
-                if (gameboard.board[2] === player.marker && gameboard.board[4] === player.marker && gameboard.board[6] === player.marker) {
+                if (Gameboard.getBoard()[2] === player.marker && Gameboard.getBoard()[4] === player.marker && Gameboard.getBoard()[6] === player.marker) {
                     return 1;
                 }
             }
 
 
             const checkWin = function (player) {
-                if (checkRows(player)) {
+                if (checkRows(player) || checkColumns(player) || checkDiagonals(player)) {
                     console.log(player.name + " has won the game")
-                }
-                if (checkColumns(player)) {
-                    console.log(player.name + " has won the game")
-                }
-                if (checkDiagonals(player)) {
-                    console.log(player.name + " has won the game")
+                } else if (Gameboard.getBoard().includes(null) === false) {
+                    console.log("It was a tie")
                 }
             }
 
-            return { gameboard, player1, player2, playTurn, checkWin};
+            return {player1, player2, playTurn, checkWin};
         }) ();
 
-        game.playTurn(game.player1, 0)
-        game.playTurn(game.player1, 3)
-        game.playTurn(game.player1, 6)
+        const Gameboard = (function () {
+            let board = [ null, null, null,
+                          null, null, null,
+                          null, null, null
+                        ];
 
-        console.log(game.gameboard.board)
+            const setMarker = (player, index) => {
+                if (board[index] === null) {
+                    board[index] = player.marker
+                } else {
+                    console.log("Spot already taken")
+                }
+            };
 
+            const getBoard = () => board;
+
+            const logBoard = () => console.log(board)
+
+            const resetBoard = () => board = [null, null, null, null, null, null, null, null, null];
+           
+            return {setMarker, getBoard, logBoard, resetBoard}
+        })();
+
+        Game.playTurn(Game.player1, 0)
+        Game.playTurn(Game.player2, 1)
+        Game.playTurn(Game.player1, 2)
+        Game.playTurn(Game.player1, 3)
+        Game.playTurn(Game.player1, 4)
+        Game.playTurn(Game.player2, 5)
+        Game.playTurn(Game.player2, 6)
+        Game.playTurn(Game.player1, 7)
+        Game.playTurn(Game.player2, 8)
 
 
     </script>
