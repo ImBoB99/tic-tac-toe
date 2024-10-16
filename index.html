@@ -1,81 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <title>Tic Tac Toe</title>
 </head>
+
 <body>
 
     <script>
+        // do a check if player is placing marker on index that is taken
+
+
+
         const Game = (function () {
 
-            const player1 = {name: "Lala", marker: "X", wins: 0,};
-            const player2 = {name: "Hope", marker: "O", wins: 0,};
+            const player1 = { name: "Lala", marker: "X", wins: 0, };
+            const player2 = { name: "Hope", marker: "O", wins: 0, };
 
-            const playTurn = (player, index) => {
-                Gameboard.setMarker(player, index);
-                Gameboard.logBoard();
-                checkWin(player);
+            const playGame = (playerOne, playerTwo) => {
+
+                let currentPlayer = playerOne;
+
+                while (true) {
+                    let index = prompt(`${currentPlayer.name} input index to mark`);
+
+                    if (Gameboard.setMarker(currentPlayer, index) !== "spot taken") {
+                        Gameboard.setMarker(currentPlayer, index)
+                    } else {
+                        continue;
+                    }
+
+
+                    if (checkWin(currentPlayer) === true) {
+                        console.log("Check win worked")
+                        break;
+                    }
+
+                    currentPlayer = currentPlayer === playerOne ? playerTwo : playerOne;
+
+                    Gameboard.logBoard();
+                }
             };
 
-            const checkRows = function(player) {
+            const checkRows = function (player) {
                 if (Gameboard.getBoard()[0] === player.marker && Gameboard.getBoard()[1] === player.marker && Gameboard.getBoard()[2] === player.marker) {
-                    return 1;
+                    return true;
                 }
                 if (Gameboard.getBoard()[3] === player.marker && Gameboard.getBoard()[4] === player.marker && Gameboard.getBoard()[5] === player.marker) {
-                    return 1;
+                    return true;
                 }
                 if (Gameboard.getBoard()[6] === player.marker && Gameboard.getBoard()[7] === player.marker && Gameboard.getBoard()[8] === player.marker) {
-                    return 1;
+                    return true;
                 }
             }
 
-            const checkColumns = function(player) {
+            const checkColumns = function (player) {
                 if (Gameboard.getBoard()[0] === player.marker && Gameboard.getBoard()[3] === player.marker && Gameboard.getBoard()[6] === player.marker) {
-                    return 1;
+                    return true;
                 }
                 if (Gameboard.getBoard()[1] === player.marker && Gameboard.getBoard()[4] === player.marker && Gameboard.getBoard()[7] === player.marker) {
-                    return 1;
+                    return true;
                 }
                 if (Gameboard.getBoard()[2] === player.marker && Gameboard.getBoard()[5] === player.marker && Gameboard.getBoard()[8] === player.marker) {
-                    return 1;
+                    return true;
                 }
             }
 
-            const checkDiagonals = function(player) {
+            const checkDiagonals = function (player) {
                 if (Gameboard.getBoard()[0] === player.marker && Gameboard.getBoard()[4] === player.marker && Gameboard.getBoard()[8] === player.marker) {
-                    return 1;
+                    return true;
                 }
                 if (Gameboard.getBoard()[2] === player.marker && Gameboard.getBoard()[4] === player.marker && Gameboard.getBoard()[6] === player.marker) {
-                    return 1;
+                    return true;
                 }
             }
 
 
             const checkWin = function (player) {
                 if (checkRows(player) || checkColumns(player) || checkDiagonals(player)) {
-                    console.log(player.name + " has won the game")
-                } else if (Gameboard.getBoard().includes(null) === false) {
-                    console.log("It was a tie")
+                    player.wins++;
+                    console.log(`${player.name} has won the game, wins: ${player.wins}`);
+                    Gameboard.resetBoard();
+                    return true;  // Game ends after win
+                } else if (!Gameboard.getBoard().includes(null)) {  // Check for tie
+                    console.log("It was a tie");
+                    Gameboard.resetBoard();
+                    return true;  // Game ends after tie
                 }
+                return false;  // Game continues if no win or tie
             }
 
-            return {player1, player2, playTurn, checkWin};
-        }) ();
+            return { player1, player2, checkWin, playGame };
+        })();
 
         const Gameboard = (function () {
-            let board = [ null, null, null,
-                          null, null, null,
-                          null, null, null
-                        ];
+            let board = [null, null, null,
+                null, null, null,
+                null, null, null
+            ];
 
             const setMarker = (player, index) => {
                 if (board[index] === null) {
                     board[index] = player.marker
                 } else {
-                    console.log("Spot already taken")
+                    return "spot taken"
                 }
             };
 
@@ -84,22 +115,15 @@
             const logBoard = () => console.log(board)
 
             const resetBoard = () => board = [null, null, null, null, null, null, null, null, null];
-           
-            return {setMarker, getBoard, logBoard, resetBoard}
+
+            return { setMarker, getBoard, logBoard, resetBoard }
         })();
 
-        Game.playTurn(Game.player1, 0)
-        Game.playTurn(Game.player2, 1)
-        Game.playTurn(Game.player1, 2)
-        Game.playTurn(Game.player1, 3)
-        Game.playTurn(Game.player1, 4)
-        Game.playTurn(Game.player2, 5)
-        Game.playTurn(Game.player2, 6)
-        Game.playTurn(Game.player1, 7)
-        Game.playTurn(Game.player2, 8)
+        Game.playGame(Game.player1, Game.player2)
 
 
     </script>
-    
+
 </body>
+
 </html>
