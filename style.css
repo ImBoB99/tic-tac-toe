@@ -1,4 +1,22 @@
 body {
     color: white;
     background-color: #101010;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.display-container {
+    display: grid;
+    grid-template-columns: repeat(3, 200px);
+    grid-template-rows: repeat(3, 200px);
+    gap: 10px;
+}
+
+.board-cell {
+    display: flex;
+    background-color: grey;
+    font-size: 100px;
+    align-items: center;
+    justify-content: center;
 }

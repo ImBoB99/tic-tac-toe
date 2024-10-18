@@ -10,10 +10,9 @@
 
 <body>
 
+    <div class="display-container"></div>
+
     <script>
-        // do a check if player is placing marker on index that is taken
-
-
 
         const Game = (function () {
 
@@ -97,9 +96,9 @@
         })();
 
         const Gameboard = (function () {
-            let board = [null, null, null,
-                null, null, null,
-                null, null, null
+            let board = [null, "X", "O",
+                "X", "X", "X",
+                "X", "X", "X"
             ];
 
             const setMarker = (player, index) => {
@@ -112,14 +111,39 @@
 
             const getBoard = () => board;
 
-            const logBoard = () => console.log(board)
+            const logBoard = () => console.log(board);
 
             const resetBoard = () => board = [null, null, null, null, null, null, null, null, null];
 
             return { setMarker, getBoard, logBoard, resetBoard }
         })();
 
-        Game.playGame(Game.player1, Game.player2)
+        const displayController = (function () {
+
+            const displayContainer = document.querySelector(".display-container");
+
+            const displayBoard = () => {
+                Gameboard.getBoard().forEach((item, index) => {
+                    console.log(item)
+                    let boardCell = document.createElement("div");
+                    boardCell.dataset.cell = index;
+                    boardCell.classList.add("board-cell");
+                    boardCell.textContent = item;
+                    displayContainer.appendChild(boardCell);
+
+                    boardCell.addEventListener("click", function (e) {
+                        console.log(e.target)
+                    })
+                })
+            };
+
+            return {displayBoard}
+
+        })()
+
+
+        displayController.displayBoard();
+       // Game.playGame(Game.player1, Game.player2)
 
 
     </script>
