@@ -10,7 +10,23 @@
 
 <body>
 
+    <h1>Tic Tac Toe</h1>
+
+    <h2 id="current-player"></h2>
+
     <div class="display-container"></div>
+
+    <div class="player-stats">
+        <div class="player-container">
+            <h2 id="player1"></h2>
+            <p id="player1-stats"></p>
+        </div>
+        <h2 id="ties"></h2>
+        <div class="player-container">
+            <h2 id="player2"></h2>
+            <p id="player2-stats"></p>
+        </div>
+    </div>
 
     <script>
 
@@ -18,31 +34,32 @@
 
             const player1 = { name: "Lala", marker: "X", wins: 0, };
             const player2 = { name: "Hope", marker: "O", wins: 0, };
+            let ties = 0;
 
-            const playGame = (playerOne, playerTwo) => {
+            const playTurn = function (player, index) {
+                console.log(`Player: ${player.name}, Index: ${index}`);
 
-                let currentPlayer = playerOne;
-
-                while (true) {
-                    let index = prompt(`${currentPlayer.name} input index to mark`);
-
-                    if (Gameboard.setMarker(currentPlayer, index) !== "spot taken") {
-                        Gameboard.setMarker(currentPlayer, index)
-                    } else {
-                        continue;
-                    }
-
-
-                    if (checkWin(currentPlayer) === true) {
-                        console.log("Check win worked")
-                        break;
-                    }
-
-                    currentPlayer = currentPlayer === playerOne ? playerTwo : playerOne;
-
+                // Check if the spot is available before placing the marker
+                if (Gameboard.setMarker(player, index) !== "spot taken") {
+                    // Set the marker and update the display
+                    Gameboard.setMarker(player, index);
                     Gameboard.logBoard();
+                    displayController.updateDisplay(player, index);
+
+                    // Check for a win or tie after the turn
+                    if (Game.checkWin(player) === 1) {
+                        console.log(`${player.name} wins!`);
+                    } else if (Game.checkWin(player) === 2) {
+                        console.log("It's a tie!");
+                    } else {
+                        // If no win or tie, switch to the next player
+                        displayController.switchPlayer();
+                    }
+                } else {
+                    console.log("Spot is taken. Try again.");
                 }
             };
+
 
             const checkRows = function (player) {
                 if (Gameboard.getBoard()[0] === player.marker && Gameboard.getBoard()[1] === player.marker && Gameboard.getBoard()[2] === player.marker) {
@@ -83,22 +100,27 @@
                     player.wins++;
                     console.log(`${player.name} has won the game, wins: ${player.wins}`);
                     Gameboard.resetBoard();
-                    return true;  // Game ends after win
+                    displayController.resetDisplay();
+                    displayController.updateStats();
+                    return 1;  // Game ends after win
                 } else if (!Gameboard.getBoard().includes(null)) {  // Check for tie
+                    Game.ties++;
                     console.log("It was a tie");
                     Gameboard.resetBoard();
-                    return true;  // Game ends after tie
+                    displayController.resetDisplay();
+                    displayController.updateStats();
+                    return 2;  // Game ends after tie
                 }
                 return false;  // Game continues if no win or tie
             }
 
-            return { player1, player2, checkWin, playGame };
+            return { player1, player2, ties, checkWin, playTurn };
         })();
 
         const Gameboard = (function () {
-            let board = [null, "X", "O",
-                "X", "X", "X",
-                "X", "X", "X"
+            let board = [null, null, null,
+                null, null, null,
+                null, null, null
             ];
 
             const setMarker = (player, index) => {
@@ -122,28 +144,74 @@
 
             const displayContainer = document.querySelector(".display-container");
 
+            // Set the current player to player1 initially
+            let currentPlayer = Game.player1;
+
+            const playerOne = document.querySelector("#player1");
+            playerOne.textContent = Game.player1.name;
+            const playerOneStats = document.querySelector("#player1-stats");
+            playerOneStats.textContent = `Wins: ${Game.player1.wins}`;
+
+            const playerTwo = document.querySelector("#player2");
+            playerTwo.textContent = Game.player2.name;
+            const playerTwoStats = document.querySelector("#player2-stats");
+            playerTwoStats.textContent = `Wins: ${Game.player2.wins}`;
+
+            const ties = document.querySelector("#ties");
+            ties.textContent = `Ties: ${Game.ties}`;
+
+            // Display the game board
             const displayBoard = () => {
                 Gameboard.getBoard().forEach((item, index) => {
-                    console.log(item)
                     let boardCell = document.createElement("div");
                     boardCell.dataset.cell = index;
                     boardCell.classList.add("board-cell");
                     boardCell.textContent = item;
                     displayContainer.appendChild(boardCell);
 
+                    // Event listener for each board cell
                     boardCell.addEventListener("click", function (e) {
-                        console.log(e.target)
-                    })
-                })
+                        let index = e.target.dataset.cell;
+
+                        // Play the turn using the current player
+                        Game.playTurn(currentPlayer, index);
+                    });
+                });
             };
 
-            return {displayBoard}
+            // Update the display when the marker is set
+            const updateDisplay = (player, index) => {
+                let boardCell = document.querySelector(`[data-cell="${index}"]`);
+                boardCell.textContent = player.marker;
+            };
 
-        })()
+            // Reset the display when a new game starts
+            const resetDisplay = () => {
+                const boardCells = document.querySelectorAll(".board-cell");
+                boardCells.forEach((item) => {
+                    item.textContent = "";
+                });
+            };
+
+            // Update the stats after a win or tie
+            const updateStats = () => {
+                playerOneStats.textContent = `Wins: ${Game.player1.wins}`;
+                playerTwoStats.textContent = `Wins: ${Game.player2.wins}`;
+                ties.textContent = `Ties: ${Game.ties}`;
+            };
+
+            // Switch between players after a valid move
+            const switchPlayer = () => {
+                currentPlayer = currentPlayer === Game.player1 ? Game.player2 : Game.player1;
+            };
+
+            return { displayBoard, updateDisplay, resetDisplay, updateStats, switchPlayer, currentPlayer };
+        })();
+
 
 
         displayController.displayBoard();
-       // Game.playGame(Game.player1, Game.player2)
+
 
 
     </script>
